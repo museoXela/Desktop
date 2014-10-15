@@ -70,6 +70,7 @@
     <Compile Include="Connection\Objects\Eventos.cs" />
     <Compile Include="Connection\Objects\Investigacion.cs" />
     <Compile Include="Connection\Objects\LinkInvestigacion.cs" />
+    <Compile Include="Connection\Objects\Publicacion.cs" />
     <Compile Include="Connection\Objects\Registro.cs" />
     <Compile Include="Connection\Objects\ResourceObject.cs" />
     <Compile Include="Connection\Objects\Traslado.cs" />
