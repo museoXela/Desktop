@@ -24,5 +24,31 @@ namespace MuseoCliente.Connection.Objects
             : base("asd/asd")
         {
         }
+
+        public Boolean CrearFotografia()
+        {
+            try
+            {
+
+            }
+            catch
+            {
+
+            }
+
+        }
+
+        public Boolean EditarFotografia()
+        {
+            try
+            {
+
+            }
+            catch
+            {
+
+            }
+
+        }
     }
 }

@@ -9,6 +9,11 @@ namespace MuseoCliente.Connection.Objects
 {
     class Autor:ResourceObject<Autor>
     {
+        public Autor()
+            : base("lasd/as/sd")
+        {
+        }
+        
         [JsonProperty]
         public int pais { get; set; }
         [JsonProperty]
@@ -16,9 +21,6 @@ namespace MuseoCliente.Connection.Objects
         [JsonProperty]
         public String apellido { get; set; }
 
-        public Autor()
-            : base("lasd/as/sd")
-        {
-        }
+        
     }
 }
