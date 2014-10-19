@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.Collections;
+using System.Linq.Expressions;
 
 
 namespace MuseoCliente.Connection.Objects
 {
-    class Pieza: ResourceObject<Pieza>
+    class Pieza : ResourceObject<Pieza>
     {
         [JsonProperty]
         public String codigo { get; set; }
@@ -19,9 +19,9 @@ namespace MuseoCliente.Connection.Objects
         [JsonProperty]
         public int clasificacion { get; set; }
         [JsonProperty]
-        public int autor {get;set;}
+        public int autor { get; set; }
         [JsonProperty]
-        public int responsableRegistro {get;set;}
+        public int responsableRegistro { get; set; }
         [JsonProperty]
         public Boolean registroIDAEH { get; set; }
         [JsonProperty]
@@ -63,69 +63,73 @@ namespace MuseoCliente.Connection.Objects
         {
         }
 
-		public void guardar()
-		{
-			try
-			{
-				this.Create();
-			}
-			catch( Exception e)
-			{
-				if (e.Source != null)
+        public void guardar()
+        {
+            try
+            {
+                this.Create();
+            }
+            catch (Exception e)
+            {
+                if (e.Source != null)
                 {
                     string error = e.Source; // para ver el nombre del error.
-					Error.ingresarError(3,"No se ha guardado en la Informacion en la base de datos");
+                    Error.ingresarError(3, "No se ha guardado en la Informacion en la base de datos");
                 }
-			}
-		}
-		
-		public void modificar(int id)
-		{
-			try
-			{
-				this.Save(id);
-			}
-			catch( Exception e)
-			{
-				if (e.Source != null)
+            }
+        }
+
+        public void modificar(int id)
+        {
+            try
+            {
+                this.Save(id.ToString());
+            }
+            catch (Exception e)
+            {
+                if (e.Source != null)
                 {
                     string error = e.Source;// para ver el nombre del error
-					Error.ingresarError(3,"No se ha modifico en la Informacion en la base de datos");
+                    Error.ingresarError(3, "No se ha modifico en la Informacion en la base de datos");
                 }
-			}		
-		}
-			
-		
+            }
+        }
+
+
         public ArrayList consultarNombre(String nombre)
         {
-			try{
-				
-				List<Pieza> lista = null;
-				List<Pieza> listaNueva = new List<Pieza>();
-				lista = this.GetAsCollection();	
-				foreach(Pieza pieza in lista)
-				{
-						if(pieza.nombre.Contains(nombre))
-							listaNueva.Add(pieza);
-				}
-                if(listaNueva == null)
+            var listaNueva = new ArrayList();
+            try
+            {
+
+                //listaNueva = ;
+                // la declaracion de "lista" estaba mal considerando que la funcion GetAsCollection esta retornando un ArrayList y un cast es ineficiente
+                var lista = this.GetAsCollection();
+
+                foreach (Pieza pieza in lista)
+                {
+                    if (pieza.nombre.Contains(nombre))
+                        listaNueva.Add(pieza);
+                }
+
+                if (listaNueva == null)
                     Error.ingresarError(2, "No se encontro nombre similares");
-			}catch(Exception e)
-			{
-				Error.ingresarError(2,"No se encontro nombre similares");
-			}
-			
+
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, "No se encontro nombre similares");
+            }
+
             return new ArrayList(listaNueva);
         }
 
         public ArrayList consultarCodigo(String codigo)
         {
+            ArrayList listaNueva = new ArrayList();
             try
             {
-
-                List<Pieza> lista = null;
-                List<Pieza> listaNueva = new List<Pieza>();
-                lista = this.GetAsCollection();
+                var lista = this.GetAsCollection();
                 foreach (Pieza pieza in lista)
                 {
                     if (pieza.codigo.Contains(codigo))
@@ -144,15 +148,14 @@ namespace MuseoCliente.Connection.Objects
 
         public ArrayList consultarClasificacion(int idClasificacion)
         {
+            ArrayList listaNueva = new ArrayList();
             try
             {
-
-                List<Pieza> lista = null;
-                List<Pieza> listaNueva = new List<Pieza>();
-                lista = this.GetAsCollection();
+                var lista = this.GetAsCollection();
                 foreach (Pieza pieza in lista)
                 {
-                    if (pieza.codigo.clasificacion = idClasificacion)
+                    // no sean burros, esa su onda no compila porque no tenia igual y estan tratando de comparar cosas que no estan relacionadas y no son del mismo tipo
+                    if (pieza.clasificacion == idClasificacion)
                         listaNueva.Add(pieza);
                 }
                 if (listaNueva == null)
@@ -168,15 +171,14 @@ namespace MuseoCliente.Connection.Objects
 
         public ArrayList consultarAutor(int idAutor)
         {
+            ArrayList listaNueva = new ArrayList();
             try
             {
-
-                List<Pieza> lista = null;
-                List<Pieza> listaNueva = new List<Pieza>();
-                lista = this.GetAsCollection();
+                var lista = this.GetAsCollection();
                 foreach (Pieza pieza in lista)
                 {
-                    if (pieza.codigo.autor = idAutor)
+                    // mismo comentario de antes no se puede comparar sin el operador ==, != o sin un valor booleano
+                    if (pieza.autor == idAutor)
                         listaNueva.Add(pieza);
                 }
                 if (listaNueva == null)
@@ -192,3 +194,4 @@ namespace MuseoCliente.Connection.Objects
 
     }
 }
+
