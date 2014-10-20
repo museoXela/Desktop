@@ -74,7 +74,6 @@
     <Compile Include="Connection\Objects\Registro.cs" />
     <Compile Include="Connection\Objects\ResourceObject.cs" />
     <Compile Include="Connection\Objects\Traslado.cs" />
-    <Compile Include="Connection\Objects\Usuario.cs" />
     <Compile Include="Connection\Objects\ValorCheck.cs" />
     <Compile Include="Connection\Objects\Autor.cs" />
     <Compile Include="Connection\Objects\Caja.cs" />
