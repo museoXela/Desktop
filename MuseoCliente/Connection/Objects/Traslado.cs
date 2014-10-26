@@ -26,6 +26,18 @@ namespace MuseoCliente.Connection.Objects
         [JsonProperty]
         public string nombre { get; set; }
 
+        [JsonProperty]
+        public int caja { get; set; }
+
+        [JsonProperty]
+        public int vitrina { get; set; }
+
+        [JsonProperty]
+        public int responsable { get; set; }
+
+        [JsonProperty]
+        public String codigopieza { get; set; }
+
         public void guardar()
         {
             try
@@ -177,6 +189,64 @@ namespace MuseoCliente.Connection.Objects
                 }
             return new ArrayList(listaNueva);
         }
+
+
+        public void regresarObjeto(int id)
+        {
+            try
+            {
+                Traslado eventosTemp = this.Get(id.ToString());
+                if (eventosTemp == null)
+                {
+                    Error.ingresarError(2, "Este Objeto no existe porfavor, ingresar correcta la busqueda");
+                    return;
+                }
+                this.id = eventosTemp.id;
+                this.nombre = eventosTemp.nombre;
+                this.fecha = eventosTemp.fecha;
+                this.bodega = eventosTemp.bodega;
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(5, "Ha ocurrido un Error en la Coneccion Porfavor Verifique su conecciona a Internet");
+            }
+        }
+
+        public void regresarObjeto()
+        {
+            regresarObjeto(this.id);
+        }
+
+        /*CONSULTAR PADRE  */
+
+        public Caja consultarCaja()
+        {
+            Caja clase = new Caja();
+            try
+            {
+                clase.regresarObjecto(this.caja);
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, "no se encontraron coincidencias con sala: " + caja);
+            }
+            return (clase);
+        }
+
+        public Vitrina consultarVitrina()
+        {
+            Vitrina clase = new Vitrina();
+            try
+            {
+                clase.regresarObjeto(this.vitrina);
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, "no se encontraron coincidencias con vitrina: " + vitrina);
+            }
+            return (clase);
+        }
+
 
 
     }

@@ -21,7 +21,7 @@ namespace MuseoCliente.Connection.Objects
         [JsonProperty]
         public int sala { get; set; }
         [JsonProperty]
-        public int usuario { get; set; }
+        public String usuario { get; set; }
 
         public Eventos()
             : base("/api/v1/eventos/")
@@ -280,6 +280,36 @@ namespace MuseoCliente.Connection.Objects
         }
 
 
+        /*CONSULTAR PADRE  por sala id*/
+
+        public Sala consultarSala()
+        {
+            Sala clase = new Sala();
+            try
+            {
+                clase.regresarObjeto(this.sala);
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, "no se encontraron coincidencias con sala: " + sala);
+            }
+            return (clase);
+        }
+
+        public Usuario consultarUsuario()
+        {
+            Usuario clase = new Usuario();
+            try
+            {
+                clase.regresarObjecto(this.usuario);
+                    
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, "no se encontraron coincidencias con sala: " + sala);
+            }
+            return (clase);
+        }
 
 
     }

@@ -30,6 +30,9 @@ namespace MuseoCliente.Connection.Objects
         [JsonProperty]
         public string link { get; set; }
 
+        [JsonProperty]
+        public int autor { get; set; }
+
 
         public void guardar()
         {
@@ -199,6 +202,54 @@ namespace MuseoCliente.Connection.Objects
                 }
             return new ArrayList(listaNueva);
         }
+
+        
+        public void regresarObjeto(int id)
+        {
+            try
+            {
+                Publicacion eventosTemp = this.Get(id.ToString());
+                if (eventosTemp == null)
+                {
+                    Error.ingresarError(2, "Este Objeto no existe porfavor, ingresar correcta la busqueda");
+                    return;
+                }
+                this.id = eventosTemp.id;
+                this.nombre = eventosTemp.nombre;
+                this.fecha = eventosTemp.fecha;
+                this.publicacion = eventosTemp.publicacion;
+                this.link = eventosTemp.link;
+                
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(5, "Ha ocurrido un Error en la Coneccion Porfavor Verifique su conecciona a Internet");
+            }
+        }
+
+        public void regresarObjeto()
+        {
+            regresarObjeto(this.id);
+        }
+
+        /*CONSULTAR PADRE  por sala id*/
+
+        public Autor consultarautor()
+        {
+             Autor clase = new Autor();
+            try
+            {
+                clase.regresarObjecto(this.autor);
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, "no se encontraron coincidencias con autor: " + autor);
+            }
+            return (clase);
+        }
+
+
+
        
     }
 }

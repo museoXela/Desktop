@@ -249,6 +249,68 @@ namespace MuseoCliente.Connection.Objects
         }
 
 
+        public void regresarObjeto(int id)
+        {
+            try
+            {
+                Fotografia eventosTemp = this.Get(id.ToString());
+                if (eventosTemp == null)
+                {
+                    Error.ingresarError(2, "Este Objeto no existe porfavor, ingresar correcta la busqueda");
+                    return;
+                }
+                this.id = eventosTemp.id;
+                this.mantenimiento = eventosTemp.mantenimiento;
+                this.pieza = eventosTemp.pieza;
+                this.tipo = eventosTemp.tipo;
+                this.ruta = eventosTemp.ruta;
+                this.perfil = eventosTemp.perfil;
+                
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(5, "Ha ocurrido un Error en la Coneccion Porfavor Verifique su conecciona a Internet");
+            }
+        }
+
+        public void regresarObjeto()
+        {
+            regresarObjeto(this.id);
+        }
+
+
+        /*CONSULTAR PADRE  por mantenimiento id*/
+
+        public Mantenimiento consultarmantenimeintoid()
+        {
+            Mantenimiento clase = new Mantenimiento();
+            try
+            {
+                clase.regresarObjeto(this.mantenimiento);
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, "no se encontraron coincidencias con sala: " + mantenimiento);
+            }
+            return (clase);
+        }
+
+
+        public Pieza consultarpieza()
+        {
+            Pieza clase = new Pieza();
+            try
+            {
+                clase.regresarObjeto(this.pieza);
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, "no se encontraron coincidencias con sala: " + pieza);
+            }
+            return (clase);
+        }
+
+
 
     }
 }
