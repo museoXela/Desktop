@@ -7,7 +7,7 @@ namespace MuseoCliente.Connection.Objects
     public class Investigacion : ResourceObject<Investigacion>
     {
         public Investigacion()
-            : base( "/v1/investigaciones/" )
+            : base( "/api/v1/investigaciones/" )
         {
 
         }
@@ -78,7 +78,11 @@ namespace MuseoCliente.Connection.Objects
             {
                 Error.ingresarError( 2, "No se encontro nombre similares" );
             }
-
+            if( listaNueva == null )
+            {
+                Error.ingresarError( 2, "No se encontraron coincidencias" );
+                return null;
+            }
             return new ArrayList( listaNueva );
         }
 
@@ -94,7 +98,11 @@ namespace MuseoCliente.Connection.Objects
             {
                 Error.ingresarError( 2, "No se encontro nombre similares" );
             }
-
+            if( listaNueva == null )
+            {
+                Error.ingresarError( 2, "No se encontraron coincidencias" );
+                return null;
+            }
             return new ArrayList( listaNueva );
         }
 
@@ -110,6 +118,11 @@ namespace MuseoCliente.Connection.Objects
             {
                 Error.ingresarError( 2, "no se encontraron coincidencias" );
             }
+            if( listaNueva == null )
+            {
+                Error.ingresarError( 2, "No se encontraron coincidencias" );
+                return null;
+            }
             return listaNueva;
         }
 
@@ -124,7 +137,29 @@ namespace MuseoCliente.Connection.Objects
             {
                 Error.ingresarError( 2, "tabla vacia" );
             }
+            if( listaNueva == null )
+            {
+                Error.ingresarError( 2, "No se encontraron coincidencias" );
+                return null;
+            }
             return listaNueva;
+        }
+
+        public void regresarObjecto( int id )
+        {
+            Investigacion Temp = this.Get( id.ToString() );
+            if( Temp == null )
+            {
+                Error.ingresarError( 2, "No se encontro coincidencia" );
+                return;
+            }
+            this.autor = Temp.autor;
+            this.contenido = Temp.contenido;
+            this.editor = Temp.editor;
+            this.fecha = Temp.fecha;
+            this.publicado = Temp.publicado;
+            this.resumen = Temp.resumen;
+            this.titulo = Temp.titulo;
         }
 
     }

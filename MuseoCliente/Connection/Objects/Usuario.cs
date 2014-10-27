@@ -7,7 +7,7 @@ namespace MuseoCliente.Connection.Objects
     public class Usuario : ResourceObject<Usuario>
     {
         public Usuario()
-            : base( "/v1/usuarios/" )
+            : base( "/api/v1/usuarios/" )
         {
 
         }
@@ -76,8 +76,31 @@ namespace MuseoCliente.Connection.Objects
             {
                 Error.ingresarError( 2, "No hay paises existentes" );
             }
+            if( listaNueva == null )
+            {
+                Error.ingresarError( 2, "No se encontraron coincidencias" );
+                return null;
+            }
+            return listaNueva;
+        }
 
-            return new ArrayList( listaNueva );
+        public void regresarObjecto( string userName )
+        {
+            Usuario Temp = this.Get( userName );
+            if( Temp == null )
+            {
+                Error.ingresarError( 2, "No se encontro coincidencia" );
+                return;
+            }
+            this.email = Temp.email;
+            this.first_name = Temp.first_name;
+            this.is_active = Temp.is_active;
+            this.is_staff = Temp.is_staff;
+            this.is_superuser = Temp.is_superuser;
+            this.last_login = Temp.last_login;
+            this.last_name = Temp.last_name;
+            this.password = Temp.password;
+            this.username = Temp.username;
         }
     }
 }
