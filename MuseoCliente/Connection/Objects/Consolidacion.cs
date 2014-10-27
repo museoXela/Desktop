@@ -102,7 +102,7 @@ namespace MuseoCliente.Connection.Objects
             List<Consolidacion> listaNueva = null;
             try
             {
-                string consultarResponsable =this.resource_uri + "?responsable=" + responsable;
+                string consultarResponsable = this.resource_uri + "?responsable__contains=" + responsable;
                 listaNueva = this.GetAsCollection(consultarResponsable);
 
 

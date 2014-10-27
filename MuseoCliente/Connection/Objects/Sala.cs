@@ -110,7 +110,7 @@ namespace MuseoCliente.Connection.Objects
             List<Sala> listaNueva = null;
             try
             {
-                string consultar =this.resource_uri + "?nombre=" + nombre;
+                string consultar = this.resource_uri + "?nombre__contains=" + nombre;
                 listaNueva = this.GetAsCollection(consultar); 
                 if (listaNueva == null)
                     Error.ingresarError(2, "no se encontraron coincidencias con nombre: " + nombre);

@@ -83,7 +83,7 @@ namespace MuseoCliente.Connection.Objects
             List<Clasificacion> listaNueva = null;
             try
             {
-                string consultarNombre = this.resource_uri + "?nombre=" + nombre;
+                string consultarNombre = this.resource_uri + "?nombre__contains=" + nombre;
                 listaNueva = this.GetAsCollection(consultarNombre);
 
 
