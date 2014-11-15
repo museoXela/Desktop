@@ -30,7 +30,6 @@ namespace MuseoCliente
         public Border borde;
         public bool modificar = false;
         public int id;
-        bool publicado = false;
         public modInvestigacion()
 		{
 			this.InitializeComponent();
@@ -38,22 +37,28 @@ namespace MuseoCliente
 
         private void LayoutRoot_Loaded(object sender, RoutedEventArgs e)
         {
+            investigacion = (Investigacion) this.DataContext;
             //Cargar datos
+            cmbAutor.ItemsSource = autores.regresarTodos();
             cmbAutor.DisplayMemberPath = "nombre";
             cmbAutor.SelectedValuePath = "id";
             //Si es para modificar
             if (modificar == true)
             {
                 lblOperacion.Content = "Modificar Investigación";
-                //txtCodigoPieza.Text = pieza.codigo;
-                //txtNombrePieza.Text = pieza.nombre;
-                //cmbAutor.ItemsSource = piezas.nombre;
-
+                //ArrayList listado = investigacion.regresarPiezas();
+                List<string> lista = new List<string>();
+                foreach(LinkInvestigacion link in investigacion.regresarLinkInvestigacion())
+                {
+                    lista.Add(link.link);
+                }
+                LinksReferencia.LoadOptions(lista);
+                gvPiezasGuardadas.ItemsSource = investigacion.regresarPiezas();
+                cmbAutor.SelectedValue = investigacion.autor;
             }
             else
             {
                 lblOperacion.Content = "Nueva Categoría";
-                cmbAutor.ItemsSource = autores.regresarTodos();
                 gvPiezasGuardadas.ItemsSource = new ArrayList();
             }
         }
@@ -68,10 +73,20 @@ namespace MuseoCliente
             if (modificar == false)
             {
                 investigacion.ingresarPiezas(piezas.ToList<Pieza>());
+                foreach(string link in LinksReferencia.GetOptions())
+                    if (!link.Equals("Opcion"))
+                        investigacion.ingresarLinks(link);
+                investigacion.fecha = DateTime.Now;
                 investigacion.guardar();
             }
             else
             {
+                investigacion.ingresarPiezas(piezas.ToList<Pieza>());
+                List<LinkInvestigacion> lista = new List<LinkInvestigacion>();
+                foreach (string link in LinksReferencia.GetOptions())
+                    if (!link.Equals("Opcion"))
+                        lista.Add(new LinkInvestigacion(link));
+                investigacion.ingresarLinks(lista);
                 investigacion.modificar();
             }
 
@@ -103,7 +118,6 @@ namespace MuseoCliente
         private void btnPublicar_Click(object sender, RoutedEventArgs e)
         {
             //Codigo para publicar en la web
-            publicado = true;
         }
 
         private void btnCancelar_Click(object sender, RoutedEventArgs e)
@@ -118,7 +132,7 @@ namespace MuseoCliente
         }
         private async void buscarPiezas(string codigo)
         {
-            Task<ArrayList> task = Task<ArrayList>.Factory.StartNew(()=>piezas.buscarNombre(codigo));
+            Task<ArrayList> task = Task<ArrayList>.Factory.StartNew(()=>piezas.buscarCodigo(codigo));
             await task;
             gvPiezas.ItemsSource = task.Result;
         }

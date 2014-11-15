@@ -13,6 +13,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MuseoCliente.Connection.Objects;
 using System.Globalization;
+using System.Threading.Tasks;
+using System.Collections;
 
 namespace MuseoCliente
 {
@@ -68,20 +70,6 @@ namespace MuseoCliente
             }
         }
 
-        string StringFromRichTextBox(RichTextBox rtb)
-        {
-            TextRange textRange = new TextRange(
-                // TextPointer to the start of content in the RichTextBox.
-                rtb.Document.ContentStart,
-                // TextPointer to the end of content in the RichTextBox.
-                rtb.Document.ContentEnd
-            );
-
-            // The Text property on a TextRange object returns a string 
-            // representing the plain text content of the TextRange. 
-            return textRange.Text;
-        }
-
         private void btnBuscar_Click(object sender, RoutedEventArgs e)
         {
             
@@ -89,9 +77,7 @@ namespace MuseoCliente
 
         private void LayoutRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            cmbSala.DisplayMemberPath = "nombre";
-            cmbSala.SelectedValuePath = "nombre";
-            cmbSala.ItemsSource = salas.regresarTodos();
+            cargarSalas();
             //Si es para modificar
             if (modificar == true)
             {
@@ -102,7 +88,14 @@ namespace MuseoCliente
                 lblOperacion.Content = "Nuevo Evento";
             }
         }
-
+        private async void cargarSalas()
+        {
+            cmbSala.DisplayMemberPath = "nombre";
+            cmbSala.SelectedValuePath = "nombre";
+            Task<ArrayList> task = Task<ArrayList>.Factory.StartNew(() => salas.regresarTodos());
+            await task;
+            cmbSala.ItemsSource = task.Result;
+        }
         private void btnCancelar_Click(object sender, RoutedEventArgs e)
         {
             borde.Child = anterior;

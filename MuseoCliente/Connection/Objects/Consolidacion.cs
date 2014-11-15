@@ -16,38 +16,82 @@ namespace MuseoCliente.Connection.Objects
         [JsonProperty]
         public DateTime fechaInicio { get; set; }
         [JsonProperty]
-        public DateTime fechaFinal { get; set; }
+        public DateTime fechaFin { get; set; }
         [JsonProperty]
-        public int responsable { get; set; }
+        public string responsable { get; set; }
         [JsonProperty]
-        public int codigoPieza { get; set; }
+        public string pieza { get; set; }
+        [JsonProperty]
+        public List<Mantenimiento> mantenimientos { get; set; }
+
+        private List<Mantenimiento> manNuevo;
+
+        private void igualarLista(List<Mantenimiento> nuevo, List<Mantenimiento> viejo)
+        {
+            nuevo.Clear();
+            foreach (Mantenimiento temp in viejo)
+            {
+                temp.consolidacion = this.id;
+                nuevo.Add(temp);
+            }
+            viejo.Clear();
+        }
 
         public Consolidacion(): base("/api/v1/consolidacion/")
         {
+            mantenimientos = new List<Mantenimiento>();
+            manNuevo = new List<Mantenimiento>();
         }
 
          public void guardar() //Crear un Usuario
         {
             try
             {
-                this.Create();
+                igualarLista(manNuevo, mantenimientos);
+                this.id = Deserialize(this.Create()).id;
             }
             catch (Exception e)
             {
-                Error.ingresarError(3, "No se ha guardado en la Informacion en la base de datos");
+                Error.ingresarError(e.Message);
             }
+            igualarLista(mantenimientos, manNuevo);
+            try
+            {
+
+                foreach (Mantenimiento man in mantenimientos)
+                    man.guardar();
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(e.Message);
+            }
+             
         }
 
 
         public void modificar() //Modifica datos de un pais
         {
+            List<Mantenimiento> temp = new List<Mantenimiento>();
             try
             {
+                temp.Clear();
+                foreach (Mantenimiento te in mantenimientos)
+                {
+                    if (te.id == 0)
+                    {
+                        te.consolidacion = this.id;
+                        temp.Add(te);
+                    }
+                    else
+                        te.modificar();
+                }
+                igualarLista(mantenimientos, temp);
+
                 this.Save(this.id.ToString());
             }
             catch (Exception e)
             {
-                Error.ingresarError(4, "No se ha modifico en la Informacion en la base de datos");
+                Error.ingresarError(e.Message);
             }
         }
 
@@ -64,7 +108,7 @@ namespace MuseoCliente.Connection.Objects
             }
             catch (Exception e)
             {
-                Error.ingresarError(2, "No se encontraron piezas de este autor");
+                Error.ingresarError(e.Message);
             }
             if (listaNueva == null)
             {
@@ -85,7 +129,7 @@ namespace MuseoCliente.Connection.Objects
             }
             catch (Exception e)
             {
-                Error.ingresarError(2, "No se encontraron piezas de este autor");
+                Error.ingresarError(e.Message);
             }
             if (listaNueva == null)
             {
@@ -110,7 +154,7 @@ namespace MuseoCliente.Connection.Objects
             }
             catch (Exception e)
             {
-                Error.ingresarError(5, "Ha ocurrido un Error en la Coneccion Porfavor Verifique su conecciona a Internet");
+                Error.ingresarError(e.Message);
             }
             if (listaNueva == null)
             {
@@ -126,6 +170,7 @@ namespace MuseoCliente.Connection.Objects
         {
             try
             {
+                this.resource_uri = this.resource_uri + id + "/";
                 Consolidacion consolidacionTemp = this.Get();
                 if (consolidacionTemp == null)
                 {
@@ -135,14 +180,15 @@ namespace MuseoCliente.Connection.Objects
                 this.id = consolidacionTemp.id;
                 this.limpieza = consolidacionTemp.limpieza;
                 this.fechaInicio = consolidacionTemp.fechaInicio;
-                this.fechaFinal = consolidacionTemp.fechaFinal;
+                this.fechaFin = consolidacionTemp.fechaFin;
                 this.responsable = consolidacionTemp.responsable;
-                this.codigoPieza = consolidacionTemp.codigoPieza;
-
+                this.pieza = consolidacionTemp.pieza;
+                igualarLista(this.mantenimientos, consolidacionTemp.mantenimientos);
+                this.resource_uri = resource_uri;
             }
             catch (Exception e)
             {
-                Error.ingresarError(5, "Ha ocurrido un Error en la Coneccion Porfavor Verifique su conecciona a Internet");
+                Error.ingresarError(e.Message);
             }
         }
 
@@ -156,11 +202,11 @@ namespace MuseoCliente.Connection.Objects
             ArrayList listaNueva = null;
             try
             {
-                listaNueva = new ArrayList(this.GetAsCollection());
+                listaNueva = new ArrayList(this.fetchAll());
             }
             catch (Exception e)
             {
-                Error.ingresarError(2, "tabla vacia");
+                Error.ingresarError(e.Message);
             }
             if (listaNueva == null)
             {
@@ -169,6 +215,14 @@ namespace MuseoCliente.Connection.Objects
             }
 
             return listaNueva;
+        }
+        public void ingresarMantenimiento(List<Mantenimiento> mante)
+        {
+            mantenimientos.Clear();
+            foreach (Mantenimiento temp in mante)
+            {
+                mantenimientos.Add(temp);
+            }
         }
 
         

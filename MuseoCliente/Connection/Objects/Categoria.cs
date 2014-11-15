@@ -46,7 +46,7 @@ namespace MuseoCliente.Connection.Objects
             ArrayList listaNueva = null;
             try
             {
-                listaNueva = new ArrayList( this.GetAsCollection( "?nombre=" + nombre ) );
+                listaNueva = new ArrayList( this.GetAsCollection( "?nombre_icontains=" + nombre ) );
             }
             catch( Exception e )
             {
@@ -60,24 +60,24 @@ namespace MuseoCliente.Connection.Objects
             return listaNueva;
         }
 
-        public ArrayList regresarClasificacion()
+        public List<Clasificacion> regresarClasificacion()
         {
-            ArrayList listaNueva = null;
+            List<Clasificacion> Clasificaciones = null;
             try
             {
                 Clasificacion Clasificacion = new Clasificacion();
-                List<Clasificacion> Clasificaciones = Clasificacion.GetAsCollection( "?categoria=" + this.id );
+                Clasificaciones = Clasificacion.GetAsCollection( "?categoria=" + this.id );
             }
             catch( Exception e )
             {
                 Error.ingresarError( 2, "No se encontraron clasificaciones para esta categoria" );
             }
-            if (listaNueva == null)
+            if (Clasificaciones.Count == 0)
             {
                 Error.ingresarError(2, "No se encontraron Clasificaciones de la Categoria "+this.nombre);
                 return null;
             }
-            return listaNueva;
+            return Clasificaciones;
         }
 
         public ArrayList regresarTodo()

@@ -36,12 +36,16 @@
             <TextBox x:Name="txtNombres" Height="25" VerticalAlignment="Top" Margin="10,41,14,0" Text="{Binding first_name, Mode=TwoWay}" Grid.Column="1" Style="{DynamicResource CustomTextBox}"/>
             <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Nombres:" Margin="10,10,0,0" Grid.Column="1" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="14" Foreground="{DynamicResource DarkGray}" Height="28" Width="67"/>
             <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Apellidos:" Margin="13,10,0,0" Grid.Column="2" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="14" Foreground="{DynamicResource DarkGray}" Height="28" Width="68"/>
-            <Label x:Name="lblUserName" Content="Nombre de usuario" Margin="10,105,10,1" Grid.Column="0" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" Foreground="{DynamicResource PureBlue}"/>
-            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="País:" Margin="10,79,0,0" Grid.Column="2" Width="74" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="14" Foreground="{DynamicResource Gray}" Height="28"/>
-            <Border HorizontalAlignment="Center" Height="100" Margin="10,8,25,0" VerticalAlignment="Top" Width="100" Background="#FFF0F0F0" CornerRadius="50">
-                <Image Source="{Binding fotografia}"/>
+            <Label x:Name="lblUserName" Content="{Binding username, Mode=TwoWay}" Margin="10,105,10,1" Grid.Column="0" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" Foreground="{DynamicResource PureBlue}"/>
+            <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="País:" Margin="10,79,0,0" Grid.Column="2" Width="74" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="14" Foreground="{DynamicResource DarkGray}" Height="28"/>
+            <Border HorizontalAlignment="Center" Cursor="Hand" ToolTip="Haz clic para cambiar la imagen"  Height="100" Margin="10,8,25,0" VerticalAlignment="Top" Width="100" Background="#FFF0F0F0" CornerRadius="50" MouseUp="Border_MouseUp">
+                <Image x:Name="imageUser" Source="{Binding fotografia, Mode=TwoWay}">
+                    <Image.Clip>
+                        <EllipseGeometry RadiusX="50" RadiusY="50" Center="50,50"/>
+                    </Image.Clip>
+                </Image>
             </Border>
-            <ComboBox x:Name="cmbPais" Grid.Column="2" Height="25" VerticalAlignment="Top" Margin="13,105,27,0" SelectionChanged="cmbPais_SelectionChanged" Loaded="cmbPais_Loaded" Style="{DynamicResource CustomComboBox}"/>
+            <ComboBox x:Name="cmbPais" Grid.Column="2" Height="25" VerticalAlignment="Top" Margin="13,105,27,0" SelectionChanged="cmbPais_SelectionChanged" Loaded="cmbPais_Loaded" Style="{DynamicResource CustomComboBox}" SelectedValue="{Binding pais, Mode=TwoWay}"/>
             <TextBox x:Name="txtCorreo" Grid.Column="1" Height="25" VerticalAlignment="Top" Margin="10,105,14,0" Text="{Binding email, Mode=TwoWay}" Style="{DynamicResource CustomTextBox}"/>
             <Label Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Content="e-mail:" Margin="10,79,0,0" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="14" Foreground="{DynamicResource DarkGray}" Height="28" Width="51"/>
             <Label Grid.Column="1" HorizontalAlignment="Left" Margin="11,10,0,188" Content="Biografía:" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="14" Foreground="{DynamicResource DarkGray}" Width="66" Grid.Row="1"/>
@@ -49,13 +53,13 @@
             <Button x:Name="btnGuardar" HorizontalAlignment="Right" FontSize="20" FontWeight="Bold" Click="btnGuardar_Click" Grid.Column="2" Margin="0,5,122,0" Grid.Row="2" Style="{DynamicResource BlueButton}" Width="88" Height="33" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Style="{DynamicResource Icons}" FontSize="30"><Run Text="💾 "/></TextBlock>
-                    <TextBlock Style="{DynamicResource SourceSans}" FontSize="14" VerticalAlignment="Center"><Run Text="Guardar"/></TextBlock>
+                    <TextBlock Style="{DynamicResource SourceSans}" FontSize="14" VerticalAlignment="Center" FontWeight="Normal"><Run Text="Guardar"/></TextBlock>
                 </StackPanel>              
             </Button>
             <Button x:Name="btnCancelar" HorizontalAlignment="Right" FontSize="18" FontWeight="Bold" Click="btnCancelar_Click" Grid.Column="2" Margin="0,5,31,0" Grid.Row="2" Width="86" Style="{DynamicResource PinkButton}" Height="33" VerticalAlignment="Top">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Style="{DynamicResource Icons}" FontSize="30"><Run Text="❌ "/></TextBlock>
-                    <TextBlock Style="{DynamicResource SourceSans}" FontSize="14" VerticalAlignment="Center"><Run Text="Salir"/></TextBlock>
+                    <TextBlock Style="{DynamicResource SourceSans}" FontSize="14" VerticalAlignment="Center" FontWeight="Normal"><Run Text="Salir"/></TextBlock>
                 </StackPanel>                
             </Button>
         </Grid>

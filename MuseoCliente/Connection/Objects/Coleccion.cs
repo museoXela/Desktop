@@ -50,7 +50,7 @@ namespace MuseoCliente.Connection.Objects
             List<Coleccion> listaNueva = null;
             try
             {
-                string consultarNombre = "?nombre=" + nombre;
+                string consultarNombre = "?nombre_icontains=" + nombre;
                 listaNueva = this.GetAsCollection(consultarNombre);
             }
             catch (Exception e)
@@ -134,6 +134,24 @@ namespace MuseoCliente.Connection.Objects
                 return null;
             }
             return listaNueva;
+        }
+
+        public List<Categoria> ObtenerCategorias()
+        {
+            try
+            {
+                Categoria cats = new Categoria();
+                string newUri = conector.BaseUri;
+                conector.BaseUri = "/api/v1/categorias/";
+                string content = conector.fetch("?coleccion=" + this.id.ToString());
+                conector.BaseUri = conector.BaseUri;
+                return cats.DeserializeList(content);
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(2, e.Message);
+            }
+            return null;
         }
     }
 }

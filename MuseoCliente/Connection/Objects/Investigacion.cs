@@ -48,67 +48,76 @@ namespace MuseoCliente.Connection.Objects
         {
             nuevo.Clear();
             foreach (LinkInvestigacion temp in viejo)
+            {
+                temp.investigacion = this.id;
                 nuevo.Add(temp);
+            }
             viejo.Clear();
         }
 
         public void guardar()
         {
+            
             try
             {
                 igualarLista(linkNuevos, links);
                 this.id = Deserialize(this.Create()).id;
+                igualarLista(links, linkNuevos);
+                this.Save(this.id.ToString());
+
             }
-            catch( Exception e )
+            catch (Exception e)
             {
-                if( e.Source != null )
-                {
-                    string error = e.Source; // para ver el nombre del error.
-                    Error.ingresarError( 3, "No se ha guardado en la Informacion en la base de datos "+e.Message );
-                }
+                    Error.ingresarError( e.Message);
             }
-            igualarLista(links, linkNuevos);
-            this.modificar();
+        }
+
+        public void eliminar()
+        {
+            try
+            {
+                this.del();
+            }
+            catch (Exception e)
+            {
+                Error.ingresarError(e.Message);
+            }
+        }
+
+        private void elminarLinks()
+        {
+            List<LinkInvestigacion> lista = this.regresarLinkInvestigacion().ToList<LinkInvestigacion>();
+            foreach (LinkInvestigacion temp in lista)
+                temp.eliminar();
         }
 
         public void modificar()
         {
             try
             {
-                linkNuevos.Clear();
-                foreach (LinkInvestigacion lin in links)
-                {
-                    
-                    if (lin.id == 0)
-                    {
-                        lin.investigacion = this.id;
-                        linkNuevos.Add(lin);
-                    }
-                }
-                igualarLista(links, linkNuevos);
+                elminarLinks();
+                foreach (LinkInvestigacion temp in links)
+                    temp.investigacion = this.id;
                 this.Save( this.id.ToString() );
             }
             catch( Exception e )
             {
-                if( e.Source != null )
-                {
-                    string error = e.Source;// para ver el nombre del error
-                    Error.ingresarError( 3, "No se ha modifico en la Informacion en la base de datos " +e.Message );
-                }
+                
+                Error.ingresarError( e.Message );
             }
         }
 
 
-        public ArrayList consultaArtitulo( String titulo )
+        public ArrayList buscarTitulo( String titulo )
         {
             ArrayList listaNueva = null;
             try
             {
-                listaNueva = new ArrayList( this.GetAsCollection( "?titulo__contains=" + titulo ) );
+                listaNueva = new ArrayList( this.GetAsCollection( "?titulo__icontains=" + titulo ) );
             }
             catch( Exception e )
             {
-                Error.ingresarError( 2, "No se encontro nombre similares" );
+                Error.ingresarError( e.Message );
             }
             if( listaNueva == null )
             {
@@ -128,7 +137,7 @@ namespace MuseoCliente.Connection.Objects
             }
             catch( Exception e )
             {
-                Error.ingresarError( 2, "No se encontro nombre similares" );
+                Error.ingresarError( e.Message);
             }
             if( listaNueva == null )
             {
@@ -144,11 +153,11 @@ namespace MuseoCliente.Connection.Objects
             try
             {
                 LinkInvestigacion LinkInvestigacion = new LinkInvestigacion();
-                listaNueva = new ArrayList( LinkInvestigacion.GetAsCollection( "?investigacion__contains=" + this.id ) );
+                listaNueva = new ArrayList(LinkInvestigacion.GetAsCollection("?investigacion=" + this.id));
             }
             catch( Exception e )
             {
-                Error.ingresarError( 2, "no se encontraron coincidencias" );
+                Error.ingresarError( e.Message );
             }
             if( listaNueva == null )
             {
@@ -167,7 +176,7 @@ namespace MuseoCliente.Connection.Objects
             }
             catch( Exception e )
             {
-                Error.ingresarError( 2, "tabla vacia" );
+                Error.ingresarError( e.Message);
             }
             if( listaNueva == null )
             {
@@ -179,57 +188,61 @@ namespace MuseoCliente.Connection.Objects
 
         public void regresarObjeto( int id )
         {
-            this.resource_uri = this.resource_uri + id + "/";
-            Investigacion Temp = this.Get();
-            if( Temp == null )
+            try
             {
-                Error.ingresarError( 2, "No se encontro coincidencia" );
-                return;
+                this.resource_uri = this.resource_uri + id + "/";
+                Investigacion Temp = this.Get();
+                if (Temp == null)
+                {
+                    Error.ingresarError(2, "No se encontro coincidencia");
+                    return;
+                }
+                this.id = Temp.id;
+                this.resource_uri = Temp.resource_uri;
+                this.autor = Temp.autor;
+                this.contenido = Temp.contenido;
+                this.editor = Temp.editor;
+                this.fecha = Temp.fecha;
+                this.publicado = Temp.publicado;
+                this.resumen = Temp.resumen;
+                this.titulo = Temp.titulo;
+                this.links = Temp.links;
+                this.piezas = Temp.piezas;
+                igualarLista(this.links, Temp.links);
             }
-            this.id = Temp.id;
-            this.resource_uri = Temp.resource_uri;
-            this.autor = Temp.autor;
-            this.contenido = Temp.contenido;
-            this.editor = Temp.editor;
-            this.fecha = Temp.fecha;
-            this.publicado = Temp.publicado;
-            this.resumen = Temp.resumen;
-            this.titulo = Temp.titulo;
-            this.links = Temp.links;
-            this.piezas = Temp.piezas;
+            catch (Exception e)
+            {
+                Error.ingresarError(e.Message);
+            }
+            
         }
 
         public ArrayList regresarPiezas()
         {
             List<Pieza> lista = new List<Pieza>();
-            Pieza pieza = null;
             try
             {
                 foreach (Dictionary<string, string> temp in piezas)
+                {
+                    Pieza pieza = new Pieza();
+                    pieza.regresarObjeto(temp["codigo"]);
+                    lista.Add(pieza);
+                }
+                /*
                     foreach (string hola in temp.Keys)
                     {
                         pieza = new Pieza();
                         pieza.regresarObjeto(temp[hola]);
                         lista.Add(pieza);
-                    }
+                    }*/
             }
             catch (Exception e)
             {
-                Error.ingresarError(2, "No existen piezas para la investigacion "+e.Message);
+                Error.ingresarError(e.Message);
                 return null;
             }
 
             return (new ArrayList(lista));
-        }
-
-        public ArrayList regresarLinks()
-        {
-            if (piezas.Count <= 0)
-            {
-                Error.ingresarError(2, "No existen piezas para la investigacion " );
-                return null;
-            }
-            return (new ArrayList(piezas));  
         }
 
         public void ingresarLinks(List<LinkInvestigacion> link)
@@ -242,14 +255,6 @@ namespace MuseoCliente.Connection.Objects
         {
             LinkInvestigacion tempLink = new LinkInvestigacion();
             tempLink.link = link;
-            try
-            {
-                tempLink.guardar();
-            }
-            catch (Exception e)
-            {
-                Error.ingresarError(2, "No existen piezas para la investigacion " + e.Message);
-            }
             links.Add(tempLink);
 
         }

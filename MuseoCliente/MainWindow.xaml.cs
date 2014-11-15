@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using MuseoCliente.Connection;
 using MuseoCliente.Connection.Objects;
 using MuseoCliente.Designer;
+using MuseoCliente.Properties;
+
 namespace MuseoCliente
 {
     /// <summary>
@@ -28,6 +30,24 @@ namespace MuseoCliente
         public MainWindow()
         {
             InitializeComponent();
+            LoadPermissions();
+        }
+
+        private void LoadPermissions()
+        {
+            itemOperaciones.Visibility = Settings.permisos.Contains("operaciones.add_consolidacion") ?
+                Visibility.Visible : Visibility.Collapsed;
+            itemFichas.Visibility = Settings.permisos.Contains("registro.add_ficha") ?
+                Visibility.Visible : Visibility.Collapsed;
+            itemClasif.Visibility = Settings.permisos.Contains("piezas.add_clasificacion") ?
+                Visibility.Visible : Visibility.Collapsed;
+            itemInsta.Visibility = Settings.permisos.Contains("traslados.add_traslado") ?
+                Visibility.Visible : Visibility.Collapsed;
+            itemEventos.Visibility = Settings.permisos.Contains("eventos.add_eventos") ?
+                Visibility.Visible : Visibility.Collapsed;
+            itemUsuarios.Visibility = Settings.permisos.Contains("auth.add_user") ?
+                Visibility.Visible : Visibility.Collapsed;
+
         }
 
         private void Window_Loaded_1(object sender, RoutedEventArgs e)
@@ -106,8 +126,9 @@ namespace MuseoCliente
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            modUsuario usr = new modUsuario() { modificar = true };
-            usr.DataContext = DataContext;
+            WelcomePage frm = new WelcomePage();
+            modUsuario usr = new modUsuario() { anterior = frm, borde = bdrContenedor, modificar = true, userName=Settings.user.username };
+            usr.DataContext = DataContext;            
             bdrContenedor.Child = usr;
         }
 
@@ -115,6 +136,50 @@ namespace MuseoCliente
         {
             Select((MenuItem)sender);
             bdrContenedor.Child = new FormDesigner();
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            Connector con = new Connector("/api/v1/logout/");
+            con.create("");
+            this.DialogResult = true;
+            this.Close();
+        }
+
+        private void Button_Click_4(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            if (this.WindowState == WindowState.Maximized)
+                this.WindowState = WindowState.Normal;
+            else
+                this.WindowState = WindowState.Maximized;
+        }
+
+        private void Button_Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Rectangle_PreviewMouseDown_1(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
+        private void itemOperaciones_Click(object sender, RoutedEventArgs e)
+        {
+            Select((MenuItem)sender);
+            modOperaciones frm = new modOperaciones();
+            frm.borde = bdrContenedor;
+            bdrContenedor.Child = frm;
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://www.github.com/museoXela/");
         }
     }
 }

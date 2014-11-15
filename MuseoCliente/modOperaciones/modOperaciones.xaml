@@ -3,27 +3,35 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:Objects="clr-namespace:MuseoCliente.Connection.Objects"
 	mc:Ignorable="d"
 	x:Class="MuseoCliente.modOperaciones"
 	x:Name="UserControl"
 	d:DesignWidth="640" d:DesignHeight="480">
 
-	<DockPanel x:Name="LayoutRoot" Background="{DynamicResource White}">
-		<Border DockPanel.Dock="Top" Margin="0" Height="30" VerticalAlignment="Top" BorderBrush="{DynamicResource Gray}" BorderThickness="0,0,0,2">
-			<DockPanel>
-				<Label DockPanel.Dock="Left">Operaciones</Label>
-				<Label Height="30" VerticalContentAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0" Style="{DynamicResource CustomLabel}" DockPanel.Dock="Right">
-					<Button x:Name="btnNuevaCons" Height="27" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold">&#10133;</Button>
-				</Label>
-			</DockPanel>
-		</Border>
-		<StackPanel>
-			<Label Height="20"/>
-			<StackPanel Height="410">
-				<Label VerticalAlignment="Center" Margin="10,0,0,0">Últimas Consolidaciones:</Label>
-                <DataGrid x:Name="gvConsolidaciones" Margin="15,0,15,0" Height="350"/>
-			</StackPanel>
-			<Label Height="20"></Label>
-		</StackPanel>
-	</DockPanel>
+    <DockPanel x:Name="LayoutRoot" Background="{DynamicResource White}" Loaded="LayoutRoot_Loaded">
+        <Border DockPanel.Dock="Top" Margin="0" Height="50" VerticalAlignment="Top" BorderBrush="{DynamicResource Gray}" BorderThickness="0,0,0,2">
+            <DockPanel>
+                <Label DockPanel.Dock="Left" Content="Operaciones" VerticalContentAlignment="Center" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="16" Foreground="{DynamicResource DarkGray}" BorderThickness="10,0,0,0"/>
+                <Button x:Name="btnNuevaCons" Height="27" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" Click="btnNuevaCons_Click" Content="➕" DockPanel.Dock="Right" Margin="0,0,10,0" Style="{DynamicResource BlueForegrounButton}" FontFamily="/MuseoCliente;component/Font/#Entypo"/>
+                <Button x:Name="btnEditar" Height="27" HorizontalAlignment="Center" FontSize="36" FontWeight="Bold" DockPanel.Dock="Right" Content="✎" Style="{DynamicResource BlueForegrounButton}" Margin="0,0,10,0" FontFamily="/MuseoCliente;component/Font/#Entypo" Click="btnEditar_Click"/>
+                <TextBox DockPanel.Dock="Right" HorizontalAlignment="Right" Height="20" Width="120"></TextBox>
+            </DockPanel>
+        </Border>
+        <StackPanel>
+            <StackPanel Height="410">
+                <Label VerticalAlignment="Center" Margin="10,10,0,0" Content="Últimas Consolidaciones:" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="14" Foreground="{DynamicResource PureBlue}"/>
+                <DataGrid x:Name="gvConsolidaciones" Margin="15,0,15,0" Height="350" FontFamily="/MuseoCliente;component/Font/#Source Sans Pro" FontSize="14" Foreground="{DynamicResource DarkGray}" AutoGenerateColumns="False" Background="{DynamicResource LightGray}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=id}" Header="#"/>
+                        <DataGridTextColumn Binding="{Binding Path=fechaInicio, StringFormat={}\{0:dd/MM/yyyy\}}" Header="Fecha de Inicio"/>
+                        <DataGridTextColumn Binding="{Binding Path=fechaFin, StringFormat={}\{0:dd/MM/yyyy\}}" Header="Fecha de fin"/>
+                        <DataGridTextColumn Binding="{Binding Path=responsable}" Header="Responsable"/>
+                        <DataGridCheckBoxColumn Binding="{Binding Path=limpieza}" Header="Limpieza"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            <Label Height="20"/>
+        </StackPanel>
+    </DockPanel>
 </UserControl>

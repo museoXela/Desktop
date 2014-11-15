@@ -10,6 +10,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading.Tasks;
+using System.Collections;
 
 namespace MuseoCliente
 {
@@ -28,7 +30,7 @@ namespace MuseoCliente
         private void btnBuscar_Click(object sender, RoutedEventArgs e)
         {
             modResultadosInv frm = new modResultadosInv();
-            frm.busqueda = txtBuscar.Text;
+            frm.busqueda = "";
             frm.borde = borde;
             frm.anterior = this;
             borde.Child = frm;
@@ -44,7 +46,55 @@ namespace MuseoCliente
 
         private void LayoutRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            gvResultados.ItemsSource = investigaciones.regresarTodo();
+            cargarInvestigaciones();
+        }
+        private async void cargarInvestigaciones()
+        {
+            Task<ArrayList> task = Task<ArrayList>.Factory.StartNew(() => investigaciones.regresarTodo());
+            await task;
+            gvResultados.ItemsSource = task.Result;
+        }
+        private void btnEditarInvestigacion_Click(object sender, RoutedEventArgs e)
+        {
+            if (gvResultados.SelectedItem != null)
+            {
+                modInvestigacion frm = new modInvestigacion();
+                frm.borde = borde;
+                frm.anterior = this;
+                frm.DataContext = gvResultados.SelectedItem;
+                frm.modificar = true;
+                borde.Child = frm;
+            }
+        }
+
+        private void btnBuscarInvestigacion_Click(object sender, RoutedEventArgs e)
+        {
+            buscarInvestigaciones(txtBuscar.Text);
+        }
+        private async void buscarInvestigaciones(string titulo)
+        {
+            Task<ArrayList> task = Task<ArrayList>.Factory.StartNew(() => investigaciones.buscarTitulo(titulo));
+            await task;
+            gvResultados.ItemsSource = task.Result;
+        }
+        private void btnNuevaInvestigacion_Click(object sender, RoutedEventArgs e)
+        {
+            modInvestigacion frm = new modInvestigacion();
+            frm.borde = borde;
+            frm.anterior = this;
+            borde.Child = frm;
+        }
+
+        private void txtBuscar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (txtBuscar.Text.Length > 3)
+            {
+                buscarInvestigaciones(txtBuscar.Text);
+            }
+            else
+            {
+                cargarInvestigaciones();
+            }
         }
 	}
 }
